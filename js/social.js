@@ -4,7 +4,6 @@
   var MAX_COMMENTS = 5;
   var socialArea = document.querySelector('.social');
   var socialCaption = socialArea.querySelector('.social__caption');
-  var socialCommentCount = socialArea.querySelector('.social__comment-count');
   var socialCommentsWrapper = socialArea.querySelector('.social__comments');
   var socialCommentTemplate = socialCommentsWrapper.firstElementChild.cloneNode(true);
   var moreCommentsButton = socialArea.querySelector('.social__comments-loader');
@@ -19,7 +18,7 @@
     startComment += MAX_COMMENTS;
     if (endComment >= comments.length) {
       moreCommentsButton.classList.add('hidden');
-      startComment = 0;
+      moreCommentsButton.removeEventListener('click', moreCommentsButtonClickHandler);
     }
     return slicedComments;
   };
@@ -40,27 +39,40 @@
       fragmentForComments.append(getRenderedComment(item));
     });
     socialCommentsWrapper.append(fragmentForComments);
+    var socialCommentCount = socialArea.querySelector('.social__comment-count');
     var splittedSocialCommentCount = socialCommentCount.innerHTML.split(' ');
     splittedSocialCommentCount.splice(0, 1, endComment);
     socialCommentCount.innerHTML = splittedSocialCommentCount.join(' ');
   };
 
-  var likesCount = document.querySelector('.likes-count');
-  var commentsCount = document.querySelector('.comments-count');
+  var moreCommentsButtonClickHandler = function () {
+    renderComments(getSlicedCommentArray());
+  };
 
-  var render = function (data) {
+  var likesCount = document.querySelector('.likes-count');
+
+  var renderSocial = function (data) {
+    var commentsCount = document.querySelector('.comments-count');
     comments = data.comments.slice();
     socialCaption.textContent = data.description;
     likesCount.textContent = data.likes;
     commentsCount.textContent = comments.length;
     socialCommentsWrapper.innerHTML = '';
     renderComments(getSlicedCommentArray());
-    moreCommentsButton.addEventListener('click', function () {
-      renderComments(getSlicedCommentArray());
-    });
+    moreCommentsButton.addEventListener('click', moreCommentsButtonClickHandler);
+  };
+
+  var resetSocial = function () {
+    if (endComment >= comments.length) {
+      moreCommentsButton.classList.remove('hidden');
+      moreCommentsButton.removeEventListener('click', moreCommentsButtonClickHandler);
+    }
+    startComment = 0;
+    endComment = 0;
   };
 
   window.social = {
-    render: render
+    render: renderSocial,
+    reset: resetSocial
   };
 })();
