@@ -15,6 +15,7 @@
       var bigPictureImg = bigPicture.querySelector('.big-picture__img img');
       bigPictureImg.src = usersData[index].url;
       bigPictureImg.alt = usersData[index].description;
+      window.social.render(usersData[index]);
     }
   });
 
