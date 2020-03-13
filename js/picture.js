@@ -16,5 +16,5 @@
 
   window.picture = {
     render: renderPicture
-  }
+  };
 })();
