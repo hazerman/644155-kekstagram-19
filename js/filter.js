@@ -4,67 +4,69 @@
   var MAX_DATA_RANDOM = 10;
   var ACTIVE_FILTER = 'img-filters__button--active';
   var fltersContainer = document.querySelector('.img-filters');
-  var filterDefault = document.querySelector('#filter-default');
-  var filterRandom = document.querySelector('#filter-random');
-  var filterDiscussed = document.querySelector('#filter-discussed');
-  var previousFilter = filterDefault;
+  var filtersForm = fltersContainer.querySelector('.img-filters__form');
+  var previousFilter = filtersForm.querySelector('.img-filters__button');
   var usersData = [];
   var usersDataCopy = [];
 
-  var filtrateByComments = function () {
-    if (!filterDiscussed.classList.contains(ACTIVE_FILTER)) {
-      previousFilter.classList.remove(ACTIVE_FILTER);
-      filterDiscussed.classList.add(ACTIVE_FILTER);
-      usersData.sort(function (smaller, bigger) {
-        return bigger.comments.length - smaller.comments.length;
-      });
-      window.main.showPictures(usersData);
-      usersData = usersDataCopy.slice();
-      previousFilter = filterDiscussed;
+  var getCommentFiltratedData = function () {
+    usersData.sort(function (smaller, bigger) {
+      return bigger.comments.length - smaller.comments.length;
+    });
+    var filteredArray = usersData.slice();
+    usersData = usersDataCopy.slice();
+    return filteredArray;
+  };
+
+  var getRandomFiltratedData = function () {
+    var randomData = [];
+    for (var i = 0; i < MAX_DATA_RANDOM; i++) {
+      var randomIndex = window.util.getRandomNumber(0, usersData.length - 1);
+      var randomElement = usersData.splice(randomIndex, 1)[0];
+      randomData.push(randomElement);
+    }
+    usersData = usersDataCopy.slice();
+    return randomData;
+  };
+
+  var getDefaultData = function () {
+    return usersData;
+  };
+
+  var filtrate = function (button) {
+    previousFilter.classList.remove(ACTIVE_FILTER);
+    button.classList.add(ACTIVE_FILTER);
+    filterChangeHandler(button);
+    previousFilter = button;
+  };
+
+  var filterType = {
+    'filter-default': getDefaultData,
+    'filter-random': getRandomFiltratedData,
+    'filter-discussed': getCommentFiltratedData
+  };
+
+  var filterChangeHandler = window.util.debounce(function (button) {
+    window.main.showPictures(filterType[button.id]());
+  });
+
+  var filtersFormClickHandler = function (evt) {
+    var target = evt.target.closest('.img-filters__button');
+    if (target && !target.classList.contains(ACTIVE_FILTER)) {
+      filtrate(target);
     }
   };
 
-  var filtrateRandomly = function () {
-    if (!filterRandom.classList.contains(ACTIVE_FILTER)) {
-      previousFilter.classList.remove(ACTIVE_FILTER);
-      filterRandom.classList.add(ACTIVE_FILTER);
-      var randomData = [];
-      for (var i = 0; i < MAX_DATA_RANDOM; i++) {
-        var randomIndex = window.util.getRandomNumber(0, usersData.length - 1);
-        var randomElement = usersData.splice(randomIndex, 1)[0];
-        randomData.push(randomElement);
-      }
-      window.main.showPictures(randomData);
-      usersData = usersDataCopy.slice();
-      previousFilter = filterRandom;
-    }
-  };
-
-  var filtrateDefault = function () {
-    if (!filterDefault.classList.contains(ACTIVE_FILTER)) {
-      previousFilter.classList.remove(ACTIVE_FILTER);
-      filterDefault.classList.add(ACTIVE_FILTER);
-      window.main.showPictures(usersData);
-      previousFilter = filterDefault;
-    }
-  };
-
-  var filterDefaultClickHandler = window.util.debounce(filtrateDefault);
-  var filterRandomClickHandler = window.util.debounce(filtrateRandomly);
-  var filterDiscussedClickHandler = window.util.debounce(filtrateByComments);
-
-  var activate = function () {
+  var activateFilters = function () {
     fltersContainer.classList.remove('img-filters--inactive');
-    filterDiscussed.addEventListener('click', filterDiscussedClickHandler);
-    filterRandom.addEventListener('click', filterRandomClickHandler);
-    filterDefault.addEventListener('click', filterDefaultClickHandler);
+    filtersForm.addEventListener('click', filtersFormClickHandler);
   };
 
   var picturesDownloadSuccessHandler = function (data) {
     usersData = data;
     usersDataCopy = usersData.slice();
     window.main.showPictures(usersData);
-    activate();
+    activateFilters();
   };
 
   window.ajax.downloadData(picturesDownloadSuccessHandler);
