@@ -18,9 +18,9 @@
   };
 
   picturesArea.addEventListener('click', function (evt) {
-    evt.preventDefault();
     var target = evt.target.closest('.picture');
     if (target) {
+      evt.preventDefault();
       window.bigPicture.show(target, usersData, renderedPictures);
     }
   });
