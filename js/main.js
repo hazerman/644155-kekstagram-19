@@ -7,6 +7,18 @@
   var usersData = [];
   var renderedPictures = [];
 
+  var showBigPicture = function (userPicture) {
+    var index = Array.from(renderedPictures).indexOf(userPicture);
+    document.body.className = 'modal-open';
+    bigPicture.classList.remove('hidden');
+    var bigPictureImg = bigPicture.querySelector('.big-picture__img img');
+    bigPictureImg.src = usersData[index].url;
+    bigPictureImg.alt = usersData[index].description;
+    window.social.render(usersData[index]);
+    bigPictureCancel.addEventListener('click', bigPictureCancelClickHandler);
+    document.addEventListener('keydown', bigPictureCancelEscKeyHandler);
+  };
+
   var removeBigPicture = function () {
     document.body.classList.remove('modal-open');
     bigPicture.classList.add('hidden');
@@ -28,22 +40,23 @@
     evt.preventDefault();
     var target = evt.target.closest('.picture');
     if (target) {
-      var index = Array.from(renderedPictures).indexOf(target);
-      document.body.className = 'modal-open';
-      bigPicture.classList.remove('hidden');
-      var bigPictureImg = bigPicture.querySelector('.big-picture__img img');
-      bigPictureImg.src = usersData[index].url;
-      bigPictureImg.alt = usersData[index].description;
-      window.social.render(usersData[index]);
-      bigPictureCancel.addEventListener('click', bigPictureCancelClickHandler);
-      document.addEventListener('keydown', bigPictureCancelEscKeyHandler);
+      showBigPicture(target);
     }
   });
 
-  var picturesDownloadSuccessHandler = function (data) {
-    var fragmentForPictures = document.createDocumentFragment();
+  var removePictures = function () {
+    renderedPictures.forEach(function (item) {
+      item.remove();
+    });
+  };
+
+  var showPictures = function (data) {
     usersData = data.slice();
-    usersData.forEach(function (item) {
+    if (renderedPictures.length) {
+      removePictures();
+    }
+    var fragmentForPictures = document.createDocumentFragment();
+    data.forEach(function (item) {
       var picture = window.picture.render(item);
       fragmentForPictures.append(picture);
     });
@@ -51,5 +64,7 @@
     picturesArea.append(fragmentForPictures);
   };
 
-  window.ajax.downloadData(picturesDownloadSuccessHandler);
+  window.main = {
+    showPictures: showPictures
+  };
 })();
