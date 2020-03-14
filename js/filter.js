@@ -47,7 +47,7 @@
   };
 
   var filterChangeHandler = window.util.debounce(function (button) {
-    window.main.showPictures(filterType[button.id]());
+    window.picture.show(filterType[button.id]());
   });
 
   var filtersFormClickHandler = function (evt) {
@@ -65,7 +65,7 @@
   var picturesDownloadSuccessHandler = function (data) {
     usersData = data;
     usersDataCopy = usersData.slice();
-    window.main.showPictures(usersData);
+    window.picture.show(usersData);
     activateFilters();
   };
 
