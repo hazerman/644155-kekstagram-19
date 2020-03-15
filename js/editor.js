@@ -25,6 +25,10 @@
     editorImgPreview.style[property] = value;
   };
 
+  var setPhotoClass = function (classValue) {
+    editorImgPreview.className = classValue;
+  };
+
   var editorCancelClickHandler = function () {
     removeEditor();
   };
@@ -38,6 +42,7 @@
   });
 
   window.editor = {
-    changePhotoProperty: changePhotoProperty
+    changePhotoProperty: changePhotoProperty,
+    setPhotoClass: setPhotoClass
   };
 })();
