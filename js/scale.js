@@ -51,4 +51,8 @@
   });
 
   setDefaultValue();
+
+  window.scale = {
+    setDefaultValue: setDefaultValue
+  };
 })();

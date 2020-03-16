@@ -7,9 +7,18 @@
   var editorImgPreview = editorContainer.querySelector('.img-upload__preview img');
   var uploadedFile = document.querySelector('#upload-file');
 
+  var deletePhotoStyle = function () {
+    editorImgPreview.removeAttribute('style');
+    editorImgPreview.removeAttribute('class');
+  };
+
   var removeEditor = function () {
     document.body.classList.remove('modal-open');
     editorOverlay.classList.add('hidden');
+    window.form.resetCustom();
+    window.scale.setDefaultValue();
+    window.effects.setDefault();
+    deletePhotoStyle();
     editorCancelButton.removeEventListener('click', editorCancelClickHandler);
     document.removeEventListener('keydown', editorCancelEscKeyHandler);
   };
@@ -29,7 +38,8 @@
     editorImgPreview.className = classValue;
   };
 
-  var editorCancelClickHandler = function () {
+  var editorCancelClickHandler = function (evt) {
+    evt.preventDefault();
     removeEditor();
   };
 

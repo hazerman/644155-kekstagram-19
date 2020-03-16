@@ -3,7 +3,7 @@
 (function () {
   var DEFAULT_EFFECT = 'effect-none';
   var effectsFieldset = document.querySelector('.effects');
-  var effectIdToClassMap = {
+  var effectIdToValuesMap = {
     'effect-none': ['effects__preview--none'],
     'effect-chrome': ['effects__preview--chrome', 'grayscale', 0, 1, ''],
     'effect-sepia': ['effects__preview--sepia', 'sepia', 0, 1, ''],
@@ -14,21 +14,28 @@
   var currentEffectId = DEFAULT_EFFECT;
   var previousEffectId = DEFAULT_EFFECT;
 
+  var setDefault = function () {
+    currentEffectId = DEFAULT_EFFECT;
+    previousEffectId = DEFAULT_EFFECT;
+    window.level.setDefault();
+    window.level.hide();
+  };
+
   var getFilterEffect = function (levelValue) {
     var filterEffect = '';
     if (currentEffectId === DEFAULT_EFFECT) {
       return filterEffect;
     }
-    var effectName = effectIdToClassMap[currentEffectId][1];
+    var effectName = effectIdToValuesMap[currentEffectId][1];
     var effectValue;
     if (levelValue === undefined) {
-      effectValue = effectIdToClassMap[currentEffectId][3];
+      effectValue = effectIdToValuesMap[currentEffectId][3];
     } else {
-      var range = effectIdToClassMap[currentEffectId][3] - effectIdToClassMap[currentEffectId][2];
+      var range = effectIdToValuesMap[currentEffectId][3] - effectIdToValuesMap[currentEffectId][2];
       var valueInRange = range * (levelValue / 100);
-      effectValue = valueInRange + effectIdToClassMap[currentEffectId][2];
+      effectValue = valueInRange + effectIdToValuesMap[currentEffectId][2];
     }
-    var effectUnit = effectIdToClassMap[currentEffectId][4];
+    var effectUnit = effectIdToValuesMap[currentEffectId][4];
     filterEffect = effectName + '(' + effectValue.toFixed(3) + effectUnit + ')';
     return filterEffect;
   };
@@ -48,7 +55,7 @@
     if (previousEffectId === DEFAULT_EFFECT) {
       window.level.show();
     }
-    window.editor.setPhotoClass(effectIdToClassMap[currentEffectId][0]);
+    window.editor.setPhotoClass(effectIdToValuesMap[currentEffectId][0]);
     window.editor.changePhotoProperty('filter', effect);
     previousEffectId = id;
   };
@@ -59,6 +66,7 @@
   });
 
   window.effects = {
-    changeDepth: changeDepth
-  }
+    changeDepth: changeDepth,
+    setDefault: setDefault
+  };
 })();
