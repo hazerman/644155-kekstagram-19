@@ -4,7 +4,8 @@
   var editorContainer = document.querySelector('.img-upload');
   var editorOverlay = editorContainer.querySelector('.img-upload__overlay');
   var editorCancelButton = editorContainer.querySelector('.img-upload__cancel');
-  var editorImgPreview = editorContainer.querySelector('.img-upload__preview img');
+  var editorImgWrapper = editorContainer.querySelector('.img-upload__preview');
+  var editorImgPreview = editorImgWrapper.querySelector('img');
   var uploadedFile = document.querySelector('#upload-file');
 
   var removeEditor = function () {
@@ -34,6 +35,19 @@
     editorImgPreview.className = classValue;
   };
 
+  var stubMessageTemplate = document.querySelector('#messages').content.querySelector('.img-upload__message');
+  var stubMessage;
+
+  var setImageStub = function () {
+    stubMessage = stubMessageTemplate.cloneNode(true);
+    editorImgWrapper.append(stubMessage);
+  };
+
+  var deleteImageStub = function () {
+    stubMessage.remove();
+    stubMessage = null;
+  };
+
   var editorCancelClickHandler = function (evt) {
     evt.preventDefault();
     removeEditor();
@@ -46,7 +60,10 @@
   };
 
   uploadedFile.addEventListener('change', function () {
+    setImageStub();
+    editorImgPreview.src = '';
     showEditor();
+    window.file.setUrl(uploadedFile, editorImgPreview, deleteImageStub);
   });
 
   window.editor = {
