@@ -69,5 +69,9 @@
     activateFilters();
   };
 
-  window.ajax.downloadData(picturesDownloadSuccessHandler);
+  var picturesDownloadErrorHandler = function (message) {
+    window.message.show('error', message, true);
+  };
+
+  window.ajax.downloadData(picturesDownloadSuccessHandler, picturesDownloadErrorHandler);
 })();

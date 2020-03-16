@@ -9,18 +9,10 @@
   var uploadForm = document.querySelector('.img-upload__form');
   var formHashtags = uploadForm.querySelector('.text__hashtags');
 
-  var hasDuplicates = function (item, array) {
-    var newArray = array.slice();
-    var index = newArray.indexOf(item);
-    newArray.splice(index, 1);
-    return newArray.includes(item);
-  };
-
   var resetCustom = function () {
     uploadForm.reset();
-    if (formHashtags.hasAttribute('style')) {
-      formHashtags.removeAttribute('style');
-    }
+    window.util.removeAttributeIfExists(formHashtags, 'style');
+    formHashtags.setCustomValidity('');
   };
 
   var getValidityMessage = function () {
@@ -30,7 +22,6 @@
     if (inputText === '') {
       return validityMessage;
     }
-    // var trim = inputText.trim();
     var unmodifiedHashtags = inputText.trim().split(' ');
     var hashtags = unmodifiedHashtags.map(function (hashtag) {
       return hashtag.toLowerCase();
@@ -60,13 +51,23 @@
         messages.push('Хэштег может содержать максимум ' + HASHTAG_MAX_LENGTH + ' символов');
         maxLengthHasChecked = true;
       }
-      if (!duplicatesHasChecked && hasDuplicates(hashtag, hashtags)) {
+      if (!duplicatesHasChecked && window.util.hasArrayDuplicatedItems(hashtag, hashtags)) {
         messages.push('Нельзя повторять хэштеги, а также #ХэшТег и #хэштег считаются одним и тем же тегом');
         duplicatesHasChecked = true;
       }
     });
     validityMessage = messages.join('. \n');
     return validityMessage;
+  };
+
+  var formSendSuccessHandler = function () {
+    window.editor.remove();
+    window.message.show('success');
+  };
+
+  var formSendErrorHandler = function (message) {
+    window.editor.remove();
+    window.message.show('error', message, false);
   };
 
   formHashtags.addEventListener('input', function () {
@@ -76,6 +77,11 @@
     } else if (!formHashtags.validity.valid) {
       formHashtags.style.boxShadow = INVALID_STYLE;
     }
+  });
+
+  uploadForm.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    window.ajax.sendData(new FormData(uploadForm), formSendSuccessHandler, formSendErrorHandler);
   });
 
   window.form = {

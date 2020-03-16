@@ -35,10 +35,25 @@
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
 
+  var removeAttributeIfExists = function (element, attribute) {
+    if (element.hasAttribute(attribute)) {
+      element.removeAttribute(attribute);
+    }
+  };
+
+  var hasArrayDuplicatedItems = function (item, array) {
+    var newArray = array.slice();
+    var index = newArray.indexOf(item);
+    newArray.splice(index, 1);
+    return newArray.includes(item);
+  };
+
   window.util = {
     enterEvent: elementEnterPressHadler,
     escEvent: elementEscPressHadler,
     debounce: debounce,
-    getRandomNumber: getRandomNumber
+    getRandomNumber: getRandomNumber,
+    removeAttributeIfExists: removeAttributeIfExists,
+    hasArrayDuplicatedItems: hasArrayDuplicatedItems
   };
 })();

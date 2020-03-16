@@ -7,18 +7,14 @@
   var editorImgPreview = editorContainer.querySelector('.img-upload__preview img');
   var uploadedFile = document.querySelector('#upload-file');
 
-  var deletePhotoStyle = function () {
-    editorImgPreview.removeAttribute('style');
-    editorImgPreview.removeAttribute('class');
-  };
-
   var removeEditor = function () {
     document.body.classList.remove('modal-open');
     editorOverlay.classList.add('hidden');
     window.form.resetCustom();
     window.scale.setDefaultValue();
     window.effects.setDefault();
-    deletePhotoStyle();
+    window.util.removeAttributeIfExists(editorImgPreview, 'style');
+    window.util.removeAttributeIfExists(editorImgPreview, 'class');
     editorCancelButton.removeEventListener('click', editorCancelClickHandler);
     document.removeEventListener('keydown', editorCancelEscKeyHandler);
   };
@@ -53,6 +49,7 @@
 
   window.editor = {
     changePhotoProperty: changePhotoProperty,
-    setPhotoClass: setPhotoClass
+    setPhotoClass: setPhotoClass,
+    remove: removeEditor
   };
 })();
