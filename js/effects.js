@@ -60,9 +60,13 @@
     previousEffectId = id;
   };
 
+  var effectChangeHandler = window.util.debounce(function (id) {
+    changeEffect(id);
+  });
+
   effectsFieldset.addEventListener('change', function (evt) {
     var target = evt.target;
-    changeEffect(target.id);
+    effectChangeHandler(target.id);
   });
 
   window.effects = {
