@@ -8,6 +8,7 @@
   var INVALID_STYLE = '0 0 0 5px red';
   var uploadForm = document.querySelector('.img-upload__form');
   var formHashtags = uploadForm.querySelector('.text__hashtags');
+  var formComment = uploadForm.querySelector('.text__description');
 
   var resetCustom = function () {
     uploadForm.reset();
@@ -85,6 +86,8 @@
   });
 
   window.form = {
-    resetCustom: resetCustom
+    resetCustom: resetCustom,
+    hashtagsField: formHashtags,
+    commentField: formComment
   };
 })();

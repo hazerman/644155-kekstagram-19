@@ -40,7 +40,9 @@
   };
 
   var editorCancelEscKeyHandler = function (evt) {
-    window.util.escEvent(evt, removeEditor);
+    if (document.activeElement !== window.form.hashtagsField && document.activeElement !== window.form.commentField) {
+      window.util.escEvent(evt, removeEditor);
+    }
   };
 
   uploadedFile.addEventListener('change', function () {
