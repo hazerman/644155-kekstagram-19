@@ -27,7 +27,7 @@
     var hashtags = unmodifiedHashtags.map(function (hashtag) {
       return hashtag.toLowerCase();
     });
-    if (hashtags.length >= MAX_HASHTAGS_COUNT) {
+    if (hashtags.length > MAX_HASHTAGS_COUNT) {
       messages.push('Не пиши больше ' + MAX_HASHTAGS_COUNT + ' хэштегов');
     }
     var startHasChecked = false;

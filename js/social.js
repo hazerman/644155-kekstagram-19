@@ -7,6 +7,7 @@
   var socialCommentsWrapper = socialArea.querySelector('.social__comments');
   var socialCommentTemplate = socialCommentsWrapper.firstElementChild.cloneNode(true);
   var moreCommentsButton = socialArea.querySelector('.social__comments-loader');
+  var socialCommentInput = socialArea.querySelector('.social__footer-text');
   var comment = {
     messages: [],
     start: 0,
@@ -69,6 +70,7 @@
     }
     comment.start = 0;
     comment.end = 0;
+    socialCommentInput.value = '';
   };
 
   window.social = {
